@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Toque de Amor ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND ESCURO E EMBAÇADO --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.discordapp.com/attachments/1249940402648125460/1513270622019391649/IMG-20260607-WA0022.jpg?ex=6a271e97&is=6a25cd17&hm=7cf27b62f7c8a272bad726a5e09f9743b8e0baea84221d2658d987a655b65a7d&'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(8px);
+            transform: scale(1.1); 
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.55);
+            z-index: -1;
+        }
+
+        /* --- TELA 1: O CORAÇÃO --- */
+        #tela-coracao {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+
+        .instrucao {
+            color: #ff7597; 
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+            animation: pulseText 2s infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .coracao-principal {
+            font-size: 120px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s ease;
+            display: inline-block;
+            filter: drop-shadow(0 10px 15px rgba(255, 71, 126, 0.5));
+        }
+
+        .balancar {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .mini-coracao {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            animation: voar 0.8s ease-out forwards;
+            z-index: 10;
+        }
+
+        .rastro-mouse {
+            font-size: 16px; 
+            animation: cairESumir 1s ease-out forwards;
+        }
+
+        /* --- TELA 2: OS PRESENTES --- */
+        #tela-presentes {
+            display: none;
+            opacity: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            transition: opacity 1s ease;
+        }
+
+        .titulo-presentes {
+            color: #fff; 
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+            transition: opacity 0.5s ease;
+        }
+
+        .container-presentes {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin-bottom: 30px;
+            transition: all 0.5s ease;
+        }
+
+        .caixa-presente {
+            font-size: 80px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            text-align: center;
+            user-select: none;
+        }
+
+        .caixa-presente:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        #container-presente-secreto {
+            display: none;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            animation: aparecerSuave 1s ease forwards;
+        }
+
+        .titulo-secreto {
+            color: #ffd700;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .caixa-secreta {
+            font-size: 95px;
+            filter: drop-shadow(0 5px 20px rgba(255, 215, 0, 0.4));
+        }
+
+        .abrir-caixa-animacao {
+            animation: estourarPresente 0.6s ease forwards;
+        }
+
+        /* --- CONTEÚDO DOS PRESENTES --- */
+        .janela-surpresa {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            margin-top: 20px;
+            animation: abrirJanela 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .janela-surpresa h2 {
+            color: #ff477e;
+            margin-bottom: 20px;
+        }
+
+        .texto-acai {
+            font-size: 1.5rem !important;
+            font-weight: bold;
+            color: #4a154b !important;
+            line-height: 1.4;
+        }
+
+        .texto-romantico {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a4a4a;
+            white-space: pre-line;
+            margin-bottom: 15px;
+        }
+
+        .foto-romantica {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            margin-top: 10px;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .botao-voltar {
+            margin-top: 25px;
+            background-color: #ff477e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .botao-voltar:hover {
+            background-color: #ff1453;
+        }
+
+        /* --- ANIMAÇÕES --- */
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-10deg); }
+            75% { transform: scale(1.1) rotate(10deg); }
+        }
+
+        @keyframes voar {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
+        }
+
+        @keyframes cairESumir {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(var(--y)) scale(0.3) rotate(var(--r)); opacity: 0; }
+        }
+
+        @keyframes estourarPresente {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.4) rotate(-8deg); }
+            60% { transform: scale(1.3) rotate(8deg); opacity: 1; }
+            100% { transform: scale(0) translateY(-100px); opacity: 0; }
+        }
+
+        @keyframes abrirJanela {
+            from { opacity: 0; transform: scale(0.7) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes aparecerSuave {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tela-coracao">
+        <div class="instrucao">Clique no coração com muito amor... ❤️</div>
+        <div id="coracao" class="coracao-principal">❤️</div>
+    </div>
+
+    <div id="tela-presentes">
+        <div class="titulo-presentes" id="titulo-pagina-2">Você desbloqueou meus presentes! Escolha um:</div>
+        
+        <div class="container-presentes" id="caixas-container">
+            <div id="caixa-1" class="caixa-presente" onclick="abrirPresente(1, this)">🎁</div>
+            <div id="caixa-2" class="caixa-presente" onclick="abrirPresente(2, this)">🎁</div>
+            <div id="caixa-3" class="caixa-presente" onclick="abrirPresente(3, this)">🎁</div>
+        </div>
+
+        <div id="container-presente-secreto">
+            <div class="titulo-secreto">✨ ESPERE! Um presente supremo apareceu... ✨</div>
+            <div id="caixa-secreta" class="caixa-presente caixa-secreta" onclick="abrirPresenteSecreto(this)">🎁</div>
+        </div>
+
+        <div id="surpresa-1" class="janela-surpresa">
+            <h2>O que tenho pra te dizer ❤️</h2>
+            <div class="texto-romantico">
+                meu amoooooorrrrr❤️❤️❤️❤️hoje é nosso diaaaaa!!!🥰🥰 talvez ja tenha até passado do dia porque provavelmente não vou conseguir terminar seu presente a tempo, amor😔. mas eu quero te dizer que eu te amo muito muito muito e quero que saiba que eu sou muito feliz com você, meu docinho de leite ❤️🥰. ja estamos bem perto de completarmos 2 anos juntos e no 3ª ano ja quero estar casado com você, meu mundo inteirinho🥰🥰🥰❤️❤️❤️❤️. quero também te agradecer por tudo que têm feito por mim desde o começo, amor❤️. você me inspirou, me apoiou e acredita em mim de uma forma tão boa e inexplicável que eu não consigo te dizer exatamente como me sinto sobre isso, mas me sinto extremamente bem ❤️❤️❤️. te digo também que você pode contar comigo porque eu quero e vou estar com você até pra sempre ta, amor?❤️💍. eu te amo demais, amor e muuuuuitão obrigado por tudo, razão da minha vida♥️♥️♥️💍.
+            </div>
+            <button class="botao-voltar" onclick="fecharSurpresa(1)">Voltar aos Presentes</button>
+        </div>
+
+        <div id="surpresa-2" class="janela-surpresa">
+            <h2>Minha noiva e eu 📸</h2>
+            <div class="texto-romantico">
+                Eu e a mulher que me deixa extremamente ansioso para vê-la novamente cada vez mais.
+            </div>
+            <img class="foto-romantica" src="https://cdn.discordapp.com/attachments/778706082180104194/1513314732969427135/IMG-20260327-WA0056.jpg?ex=6a2747ac&is=6a25f62c&hm=44eb4d064405a3b7dd6c8632a96e73efce3af627d511a73a4e0ecf5c27aac990&" alt="Nossa Foto Especial">
+            <br>
+            <button class="botao-voltar" onclick="fecharSurpresa(2)">Voltar aos Presentes</button>
+        </div>
+
+        <div id="surpresa-3" class="janela-surpresa">
+            <h2>Nossa Música / Vídeo 🎵</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/ID_DO_SEU_VÍDEO" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <button class="botao-voltar" onclick="fecharSurpresa(3)">Voltar aos Presentes</button>
+        </div>
+
+        <div id="surpresa-secreta" class="janela-surpresa">
+            <h2>SURPRESAAAA! 💜🤩</h2>
+            <div class="texto-romantico texto-acai">
+                parabéns, você ganhou um copo de açaí bem gostoso para uma noiva gostosa 😋
+            </div>
+            <button class="botao-voltar" onclick="fecharSurpresaSecreta()">Fechar</button>
+        </div>
+
+    </div>
+
+    <script>
+        const coracao = document.getElementById('coracao');
+        const telaCoracao = document.getElementById('tela-coracao');
+        const telaPresentes = document.getElementById('tela-presentes');
+        const caixasContainer = document.getElementById('caixas-container');
+        const tituloPagina2 = document.getElementById('titulo-pagina-2');
+        const containerSecreto = document.getElementById('container-presente-secreto');
+        
+        let cliques = 0;
+        let tempoUltimoClique = Date.now();
+        const CliquesNecessarios = 10; 
+
+        let presentesVistos = { 1: false, 2: false, 3: false };
+
+        coracao.addEventListener('click', (e) => {
+            const agora = Date.now();
+            if (agora - tempoUltimoClique > 1500) { cliques = 0; }
+            cliques++;
+            tempoUltimoClique = agora;
+
+            coracao.classList.remove('balancar');
+            void coracao.offsetWidth; 
+            coracao.classList.add('balancar');
+
+            criarMiniCoracoes(e.clientX, e.clientY);
+            if (cliques >= CliquesNecessarios) { mudarDeTela(); }
+        });
+
+        function criarMiniCoracoes(focoX, focoY) {
+            for (let i = 0; i < 6; i++) {
+                const mini = document.createElement('div');
+                mini.classList.add('mini-coracao');
+                mini.innerText = '❤️';
+                mini.style.left = `${focoX - 12}px`;
+                mini.style.top = `${focoY - 12}px`;
+
+                const voarX = (Math.random() - 0.5) * 300;
+                const voarY = (Math.random() - 0.5) * 300 - 100; 
+                mini.style.setProperty('--x', `${voarX}px`);
+                mini.style.setProperty('--y', `${voarY}px`);
+
+                document.body.appendChild(mini);
+                setTimeout(() => { mini.remove(); }, 800);
+            }
+        }
+
+        let ultimoRastro = 0;
+        window.addEventListener('mousemove', (e) => {
+            const agora = Date.now();
+            if (agora - ultimoRastro < 60) return;
+            ultimoRastro = agora;
+
+            const rastro = document.createElement('div');
+            rastro.classList.add('mini-coracao', 'rastro-mouse');
+            const cores = ['❤️', '💖', '💕'];
+            rastro.innerText = cores[Math.floor(Math.random() * cores.length)];
+            rastro.style.left = `${e.clientX - 8}px`;
+            rastro.style.top = `${e.clientY - 8}px`;
+
+            const quedaY = Math.random() * 80 + 40; 
+            const rotacao = (Math.random() - 0.5) * 60; 
+            rastro.style.setProperty('--y', `${quedaY}px`);
+            rastro.style.setProperty('--r', `${rotacao}deg`);
+
+            document.body.appendChild(rastro);
+            setTimeout(() => { rastro.remove(); }, 1000);
+        });
+
+        function mudarDeTela() {
+            telaCoracao.style.opacity = '0';
+            setTimeout(() => {
+                telaCoracao.style.display = 'none';
+                telaPresentes.style.display = 'flex';
+                setTimeout(() => { telaPresentes.style.opacity = '1'; }, 50);
+            }, 800);
+        }
+
+        function abrirPresente(numero, elemento) {
+            elemento.innerText = '📦';
+            elemento.classList.add('abrir-caixa-animacao');
+            presentesVistos[numero] = true;
+
+            setTimeout(() => {
+                caixasContainer.style.display = 'none'; 
+                containerSecreto.style.display = 'none'; 
+                tituloPagina2.style.opacity = '0';
+                setTimeout(() => { tituloPagina2.style.display = 'none'; }, 500);
+                
+                document.getElementById(`surpresa-${numero}`).style.display = 'block';
+            }, 550); 
+        }
+
+        function fecharSurpresa(numero) {
+            document.getElementById(`surpresa-${numero}`).style.display = 'none';
+            
+            caixasContainer.style.display = 'flex';
+            tituloPagina2.style.display = 'block';
+            setTimeout(() => { tituloPagina2.style.opacity = '1'; }, 50);
+
+            const caixas = document.querySelectorAll('.container-presentes .caixa-presente');
+            caixas.forEach(caixa => {
+                caixa.innerText = '🎁';
+                caixa.classList.remove('abrir-caixa-animacao');
+            });
+
+            if (presentesVistos[1] && presentesVistos[2] && presentesVistos[3]) {
+                containerSecreto.style.display = 'block';
+            }
+        }
+
+        function abrirPresenteSecreto(elemento) {
+            elemento.innerText = '📦';
+            elemento.classList.add('abrir-caixa-animacao');
+
+            setTimeout(() => {
+                caixasContainer.style.display = 'none';
+                containerSecreto.style.display = 'none';
+                tituloPagina2.style.display = 'none';
+                document.getElementById('surpresa-secreta').style.display = 'block';
+            }, 550);
+        }
+
+        function fecharSurpresaSecreta() {
+            document.getElementById('surpresa-secreta').style.display = 'none';
+            caixasContainer.style.display = 'flex';
+            containerSecreto.style.display = 'block';
+            tituloPagina2.style.display = 'block';
+
+            const caixaSec = document.getElementById('caixa-secreta');
+            caixaSec.innerText = '🎁';
+            caixaSec.classList.remove('abrir-caixa-animacao');
+        }
+    </script>
+</body>
+</html>
